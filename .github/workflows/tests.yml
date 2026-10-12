@@ -9,6 +9,11 @@ on:
 permissions:
   contents: read
 
+# На раннерах Windows stdout Python — cp1252, а тесты печатают кириллицу:
+# без этого шаг «Тесты» падает с UnicodeEncodeError.
+env:
+  PYTHONIOENCODING: utf-8
+
 jobs:
   test:
     name: ${{ matrix.os }} · Python ${{ matrix.python }}

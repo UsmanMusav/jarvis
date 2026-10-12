@@ -8,6 +8,11 @@ on:
 permissions:
   contents: write
 
+# На раннерах Windows stdout Python — cp1252, а тесты и скрипты сборки
+# печатают кириллицу: без этого шаг «Тесты» падает с UnicodeEncodeError.
+env:
+  PYTHONIOENCODING: utf-8
+
 jobs:
   test:
     name: Тесты
