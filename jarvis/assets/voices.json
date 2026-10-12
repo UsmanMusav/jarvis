@@ -1,0 +1,33 @@
+{
+  "_comment": "Карта голосовых клипов Джарвиса: ключ -> текст фразы. Если файла assets/voice_<язык>/<ключ>.wav нет, движок произнесёт этот текст локальным синтезом. Добавляйте свои ключи свободно.",
+  "ru": {
+    "boot": "Система Джарвис запущена. Все модули в сети. С возвращением, сэр. Я к вашим услугам.",
+    "welcome": "С возвращением, сэр.",
+    "wake": "Да, сэр?",
+    "ack": "Выполняю, сэр.",
+    "done": "Готово, сэр.",
+    "busy": "Одну минуту, сэр.",
+    "confirm": "Вы уверены, сэр?",
+    "unknown": "Боюсь, я не распознал эту команду, сэр.",
+    "error": "Произошла ошибка при выполнении, сэр.",
+    "standby": "Перехожу в режим ожидания, сэр.",
+    "shutdown": "Отключаюсь, сэр, всегда к вашим услугам.",
+    "update": "Доступно обновление системы, сэр.",
+    "updated": "Обновление установлено, сэр. Система перезапускается."
+  },
+  "en": {
+    "boot": "Jarvis online. All systems are operating within normal parameters. Welcome home, sir. I am at your service.",
+    "welcome": "Welcome home, sir.",
+    "wake": "Yes, sir?",
+    "ack": "Right away, sir.",
+    "done": "Done, sir.",
+    "busy": "One moment, sir.",
+    "confirm": "Are you certain, sir?",
+    "unknown": "I am afraid I did not recognise that command, sir.",
+    "error": "An error occurred during execution, sir.",
+    "standby": "Going into standby, sir.",
+    "shutdown": "Powering down, sir, always at your service.",
+    "update": "A system update is available, sir.",
+    "updated": "Update installed, sir. Restarting now."
+  }
+}
