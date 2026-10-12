@@ -92,7 +92,7 @@ DEFAULTS: dict = {
     # ---------- Обновления через GitHub ----------
     # Укажите свой репозиторий в виде "логин/название". Обновления берутся
     # из GitHub Releases: приложение само скачает файл для вашей ОС.
-    "update_repo": "",
+    "update_repo": "UsmanMusav/jarvis",
     "update_check_on_start": True,     # проверять при запуске
     "update_auto_install": False,      # ставить сразу, без вопроса
     "update_interval_hours": 24,       # не чаще раза в сутки

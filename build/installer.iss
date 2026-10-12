@@ -11,7 +11,7 @@
 #define AppName        "J.A.R.V.I.S."
 #define AppExeName     "JARVIS.exe"
 #define AppPublisher   "Jarvis Project"
-#define AppURL         "https://github.com/USERNAME/jarvis"
+#define AppURL         "https://github.com/UsmanMusav/jarvis"
 
 [Setup]
 ; GUID приложения — НЕ меняйте между версиями, иначе обновление поставится рядом,
