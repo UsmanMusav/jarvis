@@ -1,0 +1,22 @@
+# ── Пользовательские данные (создаются при первом запуске) ──
+config.json
+notes.txt
+
+# ── Python ──
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv*/
+venv/
+
+# ── Сборка (PyInstaller / Inno Setup / hdiutil) ──
+dist/
+build/pyi/
+build/JARVIS/
+*.app
+
+# ── Система и редакторы ──
+.DS_Store
+Thumbs.db
+desktop.ini
+*.log

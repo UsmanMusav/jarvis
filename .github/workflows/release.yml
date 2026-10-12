@@ -1,0 +1,155 @@
+name: Сборка и публикация релиза
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  test:
+    name: Тесты
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Системные пакеты (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-tk portaudio19-dev libasound2-dev espeak-ng
+
+      - name: Зависимости
+        shell: bash
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt || pip install SpeechRecognition pyttsx3 pygame psutil requests pyautogui
+
+      - name: Тесты
+        shell: bash
+        run: |
+          python tests/test_commands.py
+          python tests/test_assistant.py
+          python tests/test_updater.py
+
+  windows:
+    name: Сборка Windows
+    needs: test
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Inno Setup
+        run: choco install innosetup --no-progress -y
+
+      - name: Сборка
+        shell: cmd
+        env:
+          CI: '1'
+        run: build\build_windows.bat
+
+      - name: Артефакты
+        uses: actions/upload-artifact@v4
+        with:
+          name: jarvis-windows
+          path: |
+            dist/JARVIS-Setup-*.exe
+            dist/JARVIS-*-windows-portable.zip
+          if-no-files-found: error
+
+  macos:
+    name: Сборка macOS
+    needs: test
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Сборка
+        run: bash build/build_macos.sh
+
+      - name: Артефакты
+        uses: actions/upload-artifact@v4
+        with:
+          name: jarvis-macos
+          path: dist/JARVIS-*-macos.dmg
+          if-no-files-found: error
+
+  linux:
+    name: Сборка Linux
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Системные пакеты
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-tk portaudio19-dev libasound2-dev espeak-ng
+
+      - name: Сборка
+        run: bash build/build_linux.sh
+
+      - name: Артефакты
+        uses: actions/upload-artifact@v4
+        with:
+          name: jarvis-linux
+          path: dist/JARVIS-*-linux-x86_64.tar.gz
+          if-no-files-found: error
+
+  release:
+    name: Публикация релиза
+    needs: [windows, macos, linux]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Собрать артефакты
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+
+      - name: Контрольные суммы
+        run: |
+          cd artifacts
+          sha256sum JARVIS-Setup-*.exe JARVIS-*-windows-portable.zip JARVIS-*-macos.dmg JARVIS-*-linux-x86_64.tar.gz > SHA256SUMS.txt
+          cat SHA256SUMS.txt
+
+      - name: Проверка набора файлов
+        run: |
+          cd artifacts
+          for f in JARVIS-Setup-*.exe JARVIS-*-windows-portable.zip JARVIS-*-macos.dmg JARVIS-*-linux-x86_64.tar.gz SHA256SUMS.txt; do
+            [ -e "$f" ] || { echo "Отсутствует файл: $f"; exit 1; }
+          done
+          ls -lh
+
+      - name: Релиз
+        uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/*
+          generate_release_notes: true
+          fail_on_unmatched_files: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
